@@ -128,6 +128,8 @@ static void sfmc_cb_counters(void *magic, SFLPoller *poller, SFL_COUNTERS_SAMPLE
     slab_stats_aggregate(&thread_stats, &slab_stats);
 
     STATS_LOCK();
+	itemstats_t2 totals = calculate_itemstats_t2_totals();
+
     mcElem.counterBlock.memcache.cmd_set = slab_stats.set_cmds;
     mcElem.counterBlock.memcache.cmd_touch = thread_stats.touch_cmds;
     mcElem.counterBlock.memcache.cmd_flush = thread_stats.flush_cmds;
@@ -147,17 +149,17 @@ static void sfmc_cb_counters(void *magic, SFLPoller *poller, SFL_COUNTERS_SAMPLE
     mcElem.counterBlock.memcache.threads = settings.num_threads;
     mcElem.counterBlock.memcache.conn_yields = thread_stats.conn_yields;
     mcElem.counterBlock.memcache.listen_disabled_num = stats.listen_disabled_num;
-    mcElem.counterBlock.memcache.curr_connections = stats.curr_conns;
+    mcElem.counterBlock.memcache.curr_connections = stats_state.curr_conns;
     mcElem.counterBlock.memcache.rejected_connections = stats.rejected_conns;
     mcElem.counterBlock.memcache.total_connections = stats.total_conns;
-    mcElem.counterBlock.memcache.connection_structures = stats.conn_structs;
-    mcElem.counterBlock.memcache.evictions = stats.evictions;
-    mcElem.counterBlock.memcache.reclaimed = stats.reclaimed;
-    mcElem.counterBlock.memcache.curr_items = stats.curr_items;
+    mcElem.counterBlock.memcache.connection_structures = stats_state.conn_structs;
+    mcElem.counterBlock.memcache.evictions = totals.evicted;
+    mcElem.counterBlock.memcache.reclaimed = totals.reclaimed;
+    mcElem.counterBlock.memcache.curr_items = stats_state.curr_items;
     mcElem.counterBlock.memcache.total_items = stats.total_items;
     mcElem.counterBlock.memcache.bytes_read = thread_stats.bytes_read;
     mcElem.counterBlock.memcache.bytes_written = thread_stats.bytes_written;
-    mcElem.counterBlock.memcache.bytes = stats.curr_bytes;
+    mcElem.counterBlock.memcache.bytes = stats_state.curr_bytes;
     mcElem.counterBlock.memcache.limit_maxbytes = settings.maxbytes;
     STATS_UNLOCK();
     SFLADD_ELEMENT(cs, &mcElem);

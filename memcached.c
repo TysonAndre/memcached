@@ -1509,11 +1509,11 @@ static void process_bin_get_or_touch(conn *c) {
         time_t exptime = ntohl(t->message.body.expiration);
 
         it = item_touch(key, nkey, realtime(exptime), c);
-		/* TODO: enable this and figure out what needs to be done in logging consumer/filters, optionally? */
-		/* SFLOW_SAMPLE(SFMC_CMD_TOUCH, c, key, nkey, 0, 0, it ? TOUCHED : NOT_FOUND); */
+        /* TODO: enable this and figure out what needs to be done in logging consumer/filters, optionally? */
+        /* SFLOW_SAMPLE(SFMC_CMD_TOUCH, c, key, nkey, 0, 0, it ? TOUCHED : NOT_FOUND); */
     } else {
         it = item_get(key, nkey, c, DO_UPDATE);
-		SFLOW_SAMPLE(SFMC_CMD_GET, c, key, nkey, 0, it ? it->nbytes : 0, it ? EXISTS : NOT_FOUND);
+        SFLOW_SAMPLE(SFMC_CMD_GET, c, key, nkey, 0, it ? it->nbytes : 0, it ? EXISTS : NOT_FOUND);
     }
 
     if (it) {

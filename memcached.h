@@ -557,7 +557,7 @@ struct conn {
 
     /* data for UDP clients */
     int    request_id; /* Incoming UDP request ID, if this is a UDP "connection" */
-	/* TODO: resolve conflict with sockaddr_in */
+    /* TODO: resolve conflict with sockaddr_in */
     struct sockaddr_storage request_addr; /* Who sent the most recent request */
     socklen_t request_addr_size;
     unsigned char *hdrbuf; /* udp packet headers */

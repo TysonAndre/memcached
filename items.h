@@ -56,3 +56,25 @@ void lru_maintainer_pause(void);
 void lru_maintainer_resume(void);
 
 void *lru_bump_buf_create(void);
+
+typedef struct {
+    uint64_t evicted;
+    // uint64_t evicted_nonzero;
+    uint64_t reclaimed;
+    // uint64_t outofmemory;
+    // uint64_t tailrepairs;
+    // uint64_t expired_unfetched; /* items reclaimed but never touched */
+    // uint64_t evicted_unfetched; /* items evicted but never touched */
+    // uint64_t evicted_active; /* items evicted that should have been shuffled */
+    // uint64_t crawler_reclaimed;
+    // uint64_t crawler_items_checked;
+    // uint64_t lrutail_reflocked;
+    // uint64_t moves_to_cold;
+    // uint64_t moves_to_warm;
+    // uint64_t moves_within_lru;
+    // uint64_t direct_reclaims;
+    // rel_time_t evicted_time;
+} itemstats_t2;
+
+// Precondition: stats lock is acquired.
+itemstats_t2 calculate_itemstats_t2_totals(void);

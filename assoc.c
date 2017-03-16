@@ -80,7 +80,13 @@ int htWalk(itemCB *cbFn, int startBkt, int n, void *magic) {
     int stopBkt, bkt, maxBkt, walking, sampled;
     time_t flushTime;
     item *it;
-    mutex_lock(&cache_lock);
+    int i;
+
+    // TODO: is this the best way to ensure that this runs uninterrupted?
+    // Is this still used?
+    for(i = 0; i < POWER_LARGEST; i++) {
+        pthread_mutex_lock(&lru_locks[i]);
+    }
     if(expanding) {
         sampled = -1;
     }
@@ -108,7 +114,9 @@ int htWalk(itemCB *cbFn, int startBkt, int n, void *magic) {
 
         }
     }
-    mutex_unlock(&cache_lock);
+    for(i = 0; i < POWER_LARGEST; i++) {
+        pthread_mutex_unlock(&lru_locks[i]);
+    }
     return sampled;
 }
 #endif
