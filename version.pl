@@ -4,7 +4,7 @@
 use warnings;
 use strict;
 
-my $version = `git describe --match "[0-9].*"`;
+my $version = `./get_release_version.sh`;
 chomp $version;
 # Test the various versions.
 #my $version = 'foob';
@@ -16,8 +16,9 @@ unless ($version =~ m/^\d+\.\d+\.\d+/) {
     exit;
 }
 
-$version =~ s/-/_/g;
-write_file('version.m4', "m4_define([VERSION_NUMBER], [$version])\n");
+my $m4_version = $version;
+$m4_version =~ s/-/_/g;
+write_file('version.m4', "m4_define([VERSION_NUMBER], [$m4_version])\n");
 my ($VERSION, $FULLVERSION, $RELEASE);
 
 if ($version =~ m/^(\d+\.\d+\.\d+)_rc(\d+)$/) {
@@ -28,6 +29,10 @@ if ($version =~ m/^(\d+\.\d+\.\d+)_rc(\d+)$/) {
     $VERSION = $1;
     $FULLVERSION = $version;
     $RELEASE = '1.' . $2;
+} elsif ($version =~ m/^(\d+\.\d+\.\d+)-([0-9a-zA-Z_-]+)$/) {
+    $VERSION = $1;
+    $FULLVERSION = $version;
+    $RELEASE = $2;
 } elsif ($version =~ m/^(\d+\.\d+\.\d+)$/) {
     $VERSION = $1;
     $FULLVERSION = $version;

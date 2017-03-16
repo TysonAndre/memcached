@@ -1,3 +1,9 @@
+# Memcached Fork (With sflow logging patch)
+
+The script that can be run to make an RPM for centos 7 is `./make-rpm.sh`
+
+To build an RPM with a new version, update the version in `./get_release_version.sh` first.
+
 # Memcached
 
 Memcached is a high performance multithreaded event-based key/value cache

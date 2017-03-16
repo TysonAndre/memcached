@@ -1,12 +1,12 @@
 Name:           memcached
-Version:        @VERSION@
-Release:        @RELEASE@%{?dist}
+Version:        1.4.35
+Release:        tagged1sflow1%{?dist}
 Summary:        High Performance, Distributed Memory Object Cache with SFlow
 
 Group:          System Environment/Daemons
 License:        BSD
 URL:            https://github.com/TysonAndre/memcached
-Source0:        %{name}-@FULLVERSION@.tar.gz
+Source0:        %{name}-1.4.35-tagged1sflow1.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # For centos 6, TAGlibevent-devel
@@ -32,7 +32,7 @@ web applications by alleviating database load.
 %global debug_package %{nil}
 
 %prep
-%setup -q -n %{name}-@FULLVERSION@
+%setup -q -n %{name}-1.4.35-tagged1sflow1
 
 
 %build
