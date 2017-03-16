@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3549;
+use Test::More tests => 4963;
 use FindBin qw($Bin);
 use lib "$Bin/lib";
 use MemcachedTest;
@@ -61,7 +61,6 @@ my $mc = MC::Client->new;
 # Let's turn on detail stats for all this stuff
 
 $mc->stats('detail on');
-
 my $check = sub {
     my ($key, $orig_flags, $orig_val) = @_;
     my ($flags, $val, $cas) = $mc->get($key);
@@ -120,6 +119,23 @@ $set->('y', 5, 17, "somevaluey");
 $mc->flush;
 $empty->('x');
 $empty->('y');
+
+{
+    # diag "Some chunked item tests";
+    my $s2 = new_memcached('-o slab_chunk_max=4096');
+    ok($s2, "started the server");
+    my $m2 = MC::Client->new($s2);
+    # Specifically trying to cross the chunk boundary when internally
+    # appending CLRF.
+    for my $k (7900..8100) {
+        my $val = 'd' x $k;
+        $val .= '123';
+        $m2->set('t', $val, 0, 0);
+        # Ensure we get back the same value. Bugs can chop chars.
+        my (undef, $gval, undef) = $m2->get('t');
+        ok($gval eq $val, $gval . " = " . $val);
+    }
+}
 
 {
     # diag "Add";
@@ -190,6 +206,15 @@ is($mc->incr("x", 2**33), 8589934804, "Blast the 32bit border");
     $rv =()= eval { $mc->decr('issue48'); };
     ok($@ && $@->delta_badval, "Expected invalid value when decrementing text.");
     $check->('issue48', 0, "text");
+}
+
+# diag "Issue 320 - incr/decr wrong length for initial value";
+{
+    $mc->flush;
+    is($mc->incr("issue320", 1, 1, 0), 1, "incr initial value is 1");
+    my (undef, $rv, undef) = $mc->get("issue320");
+    is(length($rv), 1, "initial value length is 1");
+    is($rv, "1", "initial value is 1");
 }
 
 
@@ -414,6 +439,7 @@ $mc->silent_mutation(::CMD_ADDQ, 'silentadd', 'silentaddval');
     is('NULL', $stats{'domain_socket'});
     is('on', $stats{'evictions'});
     is('yes', $stats{'cas_enabled'});
+    is('yes', $stats{'flush_enabled'});
 }
 
 # diag "Test quit commands.";
@@ -602,7 +628,6 @@ sub _handle_single_response {
         my $found = length($rv);
         die("Expected $remaining bytes, got $found");
     }
-
     if (defined $myopaque) {
         Test::More::is($opaque, $myopaque, "Expected opaque");
     } else {

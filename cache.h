@@ -31,7 +31,7 @@ typedef int cache_constructor_t(void* obj, void* notused1, int notused2);
  * Destructor used to clean up allocated objects before they are
  * returned to the operating system.
  *
- * @param obj pointer to the object to initialized.
+ * @param obj pointer to the object to clean up.
  * @param notused1 This parameter is currently not used.
  * @param notused2 This parameter is currently not used.
  * @return you should return 0, but currently this is not checked
@@ -67,7 +67,7 @@ typedef struct {
  *
  * The object cache will let you allocate objects of the same size. It is fully
  * MT safe, so you may allocate objects from multiple threads without having to
- * do any syncrhonization in the application code.
+ * do any synchronization in the application code.
  *
  * @param name the name of the object cache. This name may be used for debug purposes
  *             and may help you track down what kind of object you have problems with
@@ -101,6 +101,7 @@ void cache_destroy(cache_t* handle);
  *         the allocation cannot be satisfied.
  */
 void* cache_alloc(cache_t* handle);
+void* do_cache_alloc(cache_t* handle);
 /**
  * Return an object back to the cache.
  *
@@ -111,6 +112,7 @@ void* cache_alloc(cache_t* handle);
  * @param ptr pointer to the object to return.
  */
 void cache_free(cache_t* handle, void* ptr);
+void do_cache_free(cache_t* handle, void* ptr);
 #endif
 
 #endif

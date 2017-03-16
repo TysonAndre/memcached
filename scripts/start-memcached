@@ -62,7 +62,7 @@ if(open $etchandle, $etcfile)
     foreach my $line (<$etchandle>)
     {
         $line ||= "";
-        $line =~ s/\#.*//g;
+        $line =~ s/(?<!\\)\#[^\#]*//g;
         $line =~ s/\s+$//g;
         $line =~ s/^\s+//g;
         next unless $line;
@@ -97,7 +97,7 @@ if(-e $pidfile)
         print STDERR "memcached is already running.\n";
         exit;
     }else{
-        `rm -f $localpid`;
+        unlink $pidfile;
     }
 
 }

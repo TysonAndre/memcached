@@ -7,7 +7,7 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="yes" ?>
-<rfc category="info" docName="draft-stone-memcache-binary-01" ipr="none">
+<rfc category="info" docName="draft-stone-memcache-binary-01" ipr="trust200902">
   <front>
     <title> Memcache Binary Protocol </title>
 
@@ -1412,11 +1412,16 @@ Value               : The textual string "3078"
     </section>
     <section anchor="security" title="Security Considerations">
       <t>
-      Memcache has no authentication or security layers whatsoever. It is
+      Memcache has few authentication and no security layers whatsoever. It is
       RECOMMENDED that memcache be deployed strictly on closed, protected,
       back-end networks within a single data center, within a single cluster of
       servers, or even on a single host, providing shared caching for multiple
       applications. Memcache MUST NOT be made available on a public network.
+      </t>
+
+      <t>
+      SASL is supported as an authentication mechanism. See the wiki for more
+      information.
       </t>
     </section>
 
@@ -1436,7 +1441,7 @@ Value               : The textual string "3078"
           </abstract>
         </front>
       </reference>
-      <dwdrfc-ref anchor="KEYWORDS" src='http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml'/>
+      <dwdrfc-ref anchor="KEYWORDS" src='reference.RFC.2119.xml'/>
     </references>
 
     <section anchor="acknowledgments" title="Acknowledgments">
