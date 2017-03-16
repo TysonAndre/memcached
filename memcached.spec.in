@@ -9,11 +9,14 @@ URL:            https://github.com/TysonAndre/memcached
 Source0:        %{name}-@FULLVERSION@.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  TAGlibevent-devel > 2.0
+# For centos 6, TAGlibevent-devel
+BuildRequires:  libevent-devel > 2.0
 BuildRequires:  perl(Test::More)
 BuildRequires:  /usr/bin/prove
-BuildRequires:  TAGgcc
-Requires: TAGlibevent > 2.0
+# For centos 6, TAGgcc
+# BuildRequires:  TAGgcc
+# For centos 6, TAGlibevent-devel
+Requires: libevent > 2.0
 Requires: initscripts
 Requires: numactl
 Requires(post): /sbin/chkconfig
@@ -33,6 +36,7 @@ web applications by alleviating database load.
 
 
 %build
+# PATH is unnecessary in absense of TAGgcc, but not harmful
 export PATH="/opt/gcc/bin:$PATH" CC=gcc CXX=g++ CFLAGS="-O3" CXXFLAGS="-O3"
 %configure
 
